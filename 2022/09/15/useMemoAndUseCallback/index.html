@@ -142,12 +142,11 @@
     <div class="divider"></div>
 
     <div class="content">
-        <h1 id="React的”re-render”是什么？"><a href="#React的”re-render”是什么？" class="headerlink" title="React的”re-render”是什么？"></a>React的”re-render”是什么？</h1><p>React利用了”re-render”，使得页面可以根据状态的改变而发生同步的渲染。<br>看到一段话很形象地描述了该过程：Each re-render is a snapshot of what the application’s UI should look like at a given moment in time, based on the current application state. We can think of it like a stack of photographs, each one capturing how things looked given a specific value for every state variable.</p>
-<p>**react like playing a “find the differences” game.**We don’t directly tell React which DOM nodes need to change. Instead, we tell React what the UI should be based on the current state. By re-rendering, React creates a new snapshot, and it can figure out what needs to change by comparing snapshots.</p>
+        <h1 id="React的”re-render”是什么？"><a href="#React的”re-render”是什么？" class="headerlink" title="React的”re-render”是什么？"></a>React的”re-render”是什么？</h1><p>React利用了”re-render”，使得页面可以根据状态的改变而发生同步的渲染。<br>看到一段话很形象地描述了该过程：Each re-render is a snapshot of what the application’s UI should look like at a given moment in time, based on the current application state. We can think of it like a stack of photographs, each one capturing how things looked given a specific value for every state variable.<br>**react like playing a “find the differences” game.**We don’t directly tell React which DOM nodes need to change. Instead, we tell React what the UI should be based on the current state. By re-rendering, React creates a new snapshot, and it can figure out what needs to change by comparing snapshots.</p>
 <p>useMemo和useCallback，使用useMemo和useCallback一定能达到优化的效果吗？为什么能？又为什么不能？</p>
 <p>useMemo和useCallback是react的一种记忆函数，利用闭包缓存上次的结果，该函数的成本在于额外的内存和比较逻辑，<br>最重要的是这不是一种绝对的优化，而是一种成本比较上的优化。</p>
 <h2 id="为什么使用useMemo和useCallback？"><a href="#为什么使用useMemo和useCallback？" class="headerlink" title="为什么使用useMemo和useCallback？"></a>为什么使用useMemo和useCallback？</h2><p>optimize re-renders(优化重复渲染)<br>1.Reducing the amount of work that needs to be done in a given render. (减少在每次渲染中需要做的工作。)<br>2.Reducing the number of times that a component needs to re-render. (减少一个组件重复渲染的次数)</p>
-<h2 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h2><p>This is commonly known as memoization, and it’s why this hook is called “useMemo”.<br><strong>useMemo缓存的是arrays / objects.</strong></p>
+<h2 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h2><p>This is commonly known as memoization, and it’s why this hook is called “useMemo”.<br>**useMemo缓存的是arrays / objects.**有助于避免在每次渲染时都进行高开销的计算</p>
 <p>useMemo有两个参数：第一个参数为计算过程(回调函数，必须返回一个结果)，第二个参数是依赖项(数组)，当依赖项中某一个发生变化，结果将会重新计算。</p>
 <h3 id="什么情况下可以使用useMemo"><a href="#什么情况下可以使用useMemo" class="headerlink" title="什么情况下可以使用useMemo?"></a>什么情况下可以使用useMemo?</h3><p>1.Heavy computations(有繁重的计算)<br>useMemo is essentially like a lil’ cache, and the dependencies are the cache invalidation strategy.</p>
 <p>for example:<br>我们有两个状态：selectedNum and time。我们根据输入的数字num计算出1-num之间的素数个数。每一秒，这个时间time都会不断地更新它的当前时间。</p>
@@ -190,8 +189,9 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useCallback</span>(<span class="keyword">function</span> <span class="title function_">helloWorld</span>(<span class="params"></span>)&#123;&#125;, []);</span><br><span class="line"><span class="comment">// equivalent to this:</span></span><br><span class="line"><span class="title class_">React</span>.<span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> <span class="keyword">function</span> <span class="title function_">helloWorld</span>(<span class="params"></span>)&#123;&#125;, []);</span><br></pre></td></tr></table></figure>
 
 <h2 id="什么时候使用useMemo和useCallback更合适"><a href="#什么时候使用useMemo和useCallback更合适" class="headerlink" title="什么时候使用useMemo和useCallback更合适?"></a>什么时候使用useMemo和useCallback更合适?</h2><p>一个函数执行完毕之后，就会从函数调用栈中被弹出，里面的内存也会被回收。因此，即使在函数内部创建了多个函数，执行完毕之后，这些创建的函数也都会被释放掉。函数式组件的性能是非常快的。相比class，函数更轻量，也避免了使用高阶组件、renderProps等会造成额外层级的技术。使用合理的情况下，性能几乎不会有什么问题。</p>
-<p>而当我们使用useMemo/useCallback时，由于新增了对于闭包的使用，新增了对于依赖项的比较逻辑，因此，盲目使用它们，甚至可能会让你的组件变得更慢。大多数情况下，这样的交换，并不划算，或者赚得不多。你的组件可能并不需要使用useMemo/useCallback来优化。</p>
-<p><strong>总的原则，就是当你认为，交换能够赚的时候去使用它们。</strong><br>通常情况下，当函数体或者结果的计算过程非常复杂时，我们才会考虑优先使用useCallback/useMemo。</p>
+<p>而当我们使用useMemo/useCallback时，由于新增了对于闭包的使用，新增了对于依赖项的比较逻辑，因此，盲目使用它们，甚至可能会让你的组件变得更慢。大多数情况下，这样的交换，并不划算。你的组件可能并不需要使用useMemo/useCallback来优化。</p>
+<p><strong>总的来说，就是需要权衡组件re-render 的次数和React.memo、useMemo与useCallback这些缓存机制的代价，做好平衡，不能盲目的多用这类缓存优化方案</strong></p>
+<p>通常情况下，当函数体或者结果的计算过程非常复杂时，我们才会考虑优先使用useCallback/useMemo。</p>
 <p>例如在一个一定会多次re-render的组件里，input的回调没有任何依赖项，我们就可以使用useCallback来降低多次执行带来的重复创建同样方法的负担。<br>又例如，在日历组件中，需要根据今天的日期，计算出当月的所有天数以及相关的信息。</p>
 <p><strong>不过，当依赖项会频繁变动时，我们也要考虑使用useMemo/useCallback是否划算。</strong></p>
 

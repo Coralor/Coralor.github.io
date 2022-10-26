@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>Promise 的简单理解 - Coralor</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+  
+<link rel="stylesheet" href="/css/rainbow-banner.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/toc.css">
+
+  
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body
+        data-color-scheme="auto"
+        
+        data-rainbow-banner="true"
+        data-rainbow-banner-shown="auto"
+        data-rainbow-banner-month="6"
+        data-rainbow-banner-colors="#e50000,#ff8d00,#ffee00,#008121,#004cff,#760188"
+        
+        data-config-root="/"
+        
+        data-toc="true"
+        data-toc-max-depth="2"
+        
+    >
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">Coral&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">Home</a>
+            
+            
+            <a class="nav-item" href="/archives">Archives</a>
+            
+            
+            
+            <a class="nav-item" href="/about">About</a>
+            
+            
+            
+            <a class="nav-item" href="/tags">Tags</a>
+            
+            
+            
+            <a class="nav-item" href="/categories">Category</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-codepen nav-item-icon" href="https://codepen.io/mrwillcom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-patreon nav-item-icon" href="https://www.patreon.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-mastodon nav-item-icon" href="https://noc.social/@MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-discord nav-item-icon" href="https://discord.gg/UKuFDjcfY8" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+
+        
+        <div class="date" id="date">
+            <span>October</span>
+            <span>26,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">Promise 的简单理解</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>为什么需要Promise?</p>
+<p>Promise可以将异步操作以同步的流程表达出来，可以解决回调地狱的问题。</p>
+<h1 id="Promise的含义"><a href="#Promise的含义" class="headerlink" title="Promise的含义"></a>Promise的含义</h1><p>Promise，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。从语法上说，Promise 是一个对象，从它可以获取异步操作的消息</p>
+<h1 id="Promise的基本使用"><a href="#Promise的基本使用" class="headerlink" title="Promise的基本使用"></a>Promise的基本使用</h1><ul>
+<li>Promise 接受一个函数作为参数，在函数中有两个参数： reolove,reject。</li>
+<li>Promise实例，有两个属性：state和result</li>
+<li>Promise的状态：pending, fullfilled, rejected</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>(1) Promise状态改变</p>
+<ul>
+<li>调用resolve(),可以使当前Promise对象状态改变为fulfilled。<strong>在异步操作成功是调用，并将异步操作的结果作为参数传递出去</strong></li>
+<li>调用reject(),可以使当前Promise对象状态变成rejected。<strong>在异步操作失败时调用，并将异步操作报出的错误作为参数传递出去</strong></li>
+<li>Promise 的状态一旦改变，就永久保持该状态，不会再变了</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">resolve</span>();    </span><br><span class="line">  <span class="comment">// reject()</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(p)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/promiseState.png" alt="&#39;Promise&#39;"></p>
+<p>(2) Promise的结果</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">const</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">resolve</span>(<span class="string">&quot;成功的结果&quot;</span>);</span><br><span class="line">  <span class="comment">// reject(&quot;失败的结果&quot;)</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(p) </span><br></pre></td></tr></table></figure>
+
+<h1 id="Promise的方法"><a href="#Promise的方法" class="headerlink" title="Promise的方法"></a>Promise的方法</h1><p>(1) then </p>
+<ul>
+<li>then的两个参数都是函数, 都是可选的。<strong>它们都是把Promise对象传出的值作为参数</strong></li>
+<li>第一个参数是Promise的状态是fullfilled时执行</li>
+<li>第二个参数时Promise的状态是rejected时执行</li>
+<li>then方法返回一个新的Promise实例，此时状态是pending </li>
+<li>Promise的状态不改变就不会执行then里面的方法</li>
+<li>在then方法中通过return将返回的Promise实例改成fulfilled状态</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// resolve(&quot;成功的结果&quot;);</span></span><br><span class="line">    <span class="title function_">reject</span>(<span class="string">&quot;失败的结果&quot;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> t = p.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">// 当Promise的状态使fulfilled时执行</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;成功的回调&quot;</span>, value)</span><br><span class="line"><span class="comment">//   这里的return可以让t实例的状态改成fulfilled</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">123</span></span><br><span class="line">&#125;,<span class="function">(<span class="params">error</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">// 当Promise的状态时rejected时, 执行</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;失败时调用&quot;</span>, error)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> q = t.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;成功&#x27;</span>, value)</span><br><span class="line">&#125;,<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;失败&#x27;</span>, error)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(p) </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">resolve</span>(<span class="string">&#x27;成功的结果&#x27;</span>)</span><br><span class="line"><span class="title function_">reject</span>(<span class="string">&#x27;失败的结果&#x27;</span>)</span><br><span class="line"><span class="comment">// 而then中的两个函数参数类似于以下</span></span><br><span class="line"><span class="comment">// 因为可以通过参数获取到Promise对象中的结果</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">resolve</span> = (<span class="params">res</span>) =&gt; &#123;&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">reject</span> = (<span class="params">err</span>) =&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(2) catch</p>
+<ul>
+<li>当Promise的状态改为rejected时被执行</li>
+<li>当Promise执行过程中出现错误时被执行<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">reject</span>()</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;出错啦&quot;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">p.<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;失败&#x27;</span>, error)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>封装ajax请求, 同时可以理解了axios返回的是一个Promise，<br>在请求接口后需要处理，可以用then，或者async await获取到返回的数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getData</span>(<span class="params">url, data = &#123;&#125;</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  	$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">      <span class="comment">// 发送请求类型</span></span><br><span class="line">    	<span class="attr">type</span>: <span class="string">&quot;GET&quot;</span>,</span><br><span class="line">      <span class="attr">url</span>: url,</span><br><span class="line">      <span class="attr">data</span>: data,</span><br><span class="line">      <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">      	<span class="comment">// 修改Promise状态为成功, 修改Promise的结果res</span></span><br><span class="line">        <span class="title function_">resolve</span>(res)</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">error</span>:<span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">      	<span class="comment">// 修改Promise的状态为失败,修改Promise的结果res</span></span><br><span class="line">        <span class="title function_">reject</span>(res)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用函数</span></span><br><span class="line"><span class="title function_">getData</span>(<span class="string">&quot;data1.json&quot;</span>)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  	<span class="comment">// console.log(data)</span></span><br><span class="line">    <span class="keyword">const</span> &#123; id &#125; = data</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">getData</span>(<span class="string">&quot;data2.json&quot;</span>, &#123;id&#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  	<span class="comment">// console.log(data)</span></span><br><span class="line">    <span class="keyword">const</span> &#123; usename &#125; = data</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">getData</span>(<span class="string">&quot;data3.json&quot;</span>, &#123;usename&#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">  	<span class="variable language_">console</span>.<span class="title function_">log</span>(data)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="Promise的缺点"><a href="#Promise的缺点" class="headerlink" title="Promise的缺点"></a>Promise的缺点</h1><ul>
+<li>一旦新建立即执行，无法取消。</li>
+<li>如果不设置回调函数，Promise内部抛出错误，不会反应到外部。<strong>Promise会吃掉错误</strong></li>
+<li>当处于pending状态，无法得知目前处于哪个阶段，是刚开始还是快完成</li>
+</ul>
+
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
+                
+                Tagged with <a href="/tags/es6/" class="tag">#es6</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
+    </div>
+
+    
+        
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/home" class="item">Blog</a>
+                
+                <a href="/archives" class="item">Archives</a>
+                
+                <a href="/resume" class="item">Resume</a>
+                
+                <a href="/about" class="item">About</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Projects</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/hexo-theme-cupertino" class="item">Hexo Theme Cupertino</a>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/a-calendar" class="item">A Calendar</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/coralor" class="item">GitHub</a>
+                
+                <a href="mailto:mr.will.com@outlook.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 Coral<br >Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> </span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+        
+    </body>
+</html>

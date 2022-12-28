@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>useMemo和useCallback - Coralor</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+  
+<link rel="stylesheet" href="/css/rainbow-banner.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/toc.css">
+
+  
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body
+        data-color-scheme="auto"
+        
+        data-rainbow-banner="true"
+        data-rainbow-banner-shown="auto"
+        data-rainbow-banner-month="6"
+        data-rainbow-banner-colors="#e50000,#ff8d00,#ffee00,#008121,#004cff,#760188"
+        
+        data-config-root="/"
+        
+        data-toc="true"
+        data-toc-max-depth="2"
+        
+    >
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">Coral&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">Home</a>
+            
+            
+            <a class="nav-item" href="/archives">Archives</a>
+            
+            
+            
+            <a class="nav-item" href="/about">About</a>
+            
+            
+            
+            <a class="nav-item" href="/tags">Tags</a>
+            
+            
+            
+            <a class="nav-item" href="/categories">Category</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-codepen nav-item-icon" href="https://codepen.io/mrwillcom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-patreon nav-item-icon" href="https://www.patreon.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-mastodon nav-item-icon" href="https://noc.social/@MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-discord nav-item-icon" href="https://discord.gg/UKuFDjcfY8" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+
+        
+        <div class="date" id="date">
+            <span>September</span>
+            <span>15,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">useMemo和useCallback</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <h1 id="React的”re-render”是什么？"><a href="#React的”re-render”是什么？" class="headerlink" title="React的”re-render”是什么？"></a>React的”re-render”是什么？</h1><p>React利用了”re-render”，使得页面可以根据状态的改变而发生同步的渲染。<br>看到一段话很形象地描述了该过程：Each re-render is a snapshot of what the application’s UI should look like at a given moment in time, based on the current application state. We can think of it like a stack of photographs, each one capturing how things looked given a specific value for every state variable.<br>**react like playing a “find the differences” game.**We don’t directly tell React which DOM nodes need to change. Instead, we tell React what the UI should be based on the current state. By re-rendering, React creates a new snapshot, and it can figure out what needs to change by comparing snapshots.</p>
+<p>useMemo和useCallback，使用useMemo和useCallback一定能达到优化的效果吗？为什么能？又为什么不能？</p>
+<p>useMemo和useCallback是react的一种记忆函数，利用闭包缓存上次的结果，该函数的成本在于额外的内存和比较逻辑，<br>最重要的是这不是一种绝对的优化，而是一种成本比较上的优化。</p>
+<h2 id="为什么使用useMemo和useCallback？"><a href="#为什么使用useMemo和useCallback？" class="headerlink" title="为什么使用useMemo和useCallback？"></a>为什么使用useMemo和useCallback？</h2><p>optimize re-renders(优化重复渲染)<br>1.Reducing the amount of work that needs to be done in a given render. (减少在每次渲染中需要做的工作。)<br>2.Reducing the number of times that a component needs to re-render. (减少一个组件重复渲染的次数)</p>
+<h2 id="useMemo"><a href="#useMemo" class="headerlink" title="useMemo"></a>useMemo</h2><p>This is commonly known as memoization, and it’s why this hook is called “useMemo”.<br>**useMemo缓存的是arrays / objects.**有助于避免在每次渲染时都进行高开销的计算</p>
+<p>useMemo有两个参数：第一个参数为计算过程(回调函数，必须返回一个结果)，第二个参数是依赖项(数组)，当依赖项中某一个发生变化，结果将会重新计算。</p>
+<h3 id="什么情况下可以使用useMemo"><a href="#什么情况下可以使用useMemo" class="headerlink" title="什么情况下可以使用useMemo?"></a>什么情况下可以使用useMemo?</h3><p>1.Heavy computations(有繁重的计算)<br>useMemo is essentially like a lil’ cache, and the dependencies are the cache invalidation strategy.</p>
+<p>for example:<br>我们有两个状态：selectedNum and time。我们根据输入的数字num计算出1-num之间的素数个数。每一秒，这个时间time都会不断地更新它的当前时间。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> format <span class="keyword">from</span> <span class="string">&#x27;date-fns/format&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [selectedNum, setSelectedNum] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> time = <span class="title function_">useTime</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> allPrimes = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> counter = <span class="number">2</span>; counter &lt; selectedNum; counter++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">isPrime</span>(counter)) &#123;</span><br><span class="line">      allPrimes.<span class="title function_">push</span>(counter);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">className</span>=<span class="string">&quot;clock&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        &#123;format(time, &#x27;hh:mm:ss a&#x27;)&#125;</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">form</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">htmlFor</span>=<span class="string">&quot;num&quot;</span>&gt;</span>Your number:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">input</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">type</span>=<span class="string">&quot;number&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">value</span>=<span class="string">&#123;selectedNum&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">onChange</span>=<span class="string">&#123;(event)</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">            let num = Math.min(100_000, Number(event.target.value));</span></span><br><span class="line"><span class="language-xml">            setSelectedNum(num);</span></span><br><span class="line"><span class="language-xml">          &#125;&#125;</span></span><br><span class="line"><span class="language-xml">        /&gt;</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        There are &#123;allPrimes.length&#125; prime(s) between 1 and &#123;selectedNum&#125;:</span></span><br><span class="line"><span class="language-xml">        &#123;&#x27; &#x27;&#125;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">className</span>=<span class="string">&quot;prime-list&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">          &#123;allPrimes.join(&#x27;, &#x27;)&#125;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建时钟的函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">useTime</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [time, setTime] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">  </span><br><span class="line">  <span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> intervalId = <span class="variable language_">window</span>.<span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">setTime</span>(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">window</span>.<span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, []);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> time;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否为素数的函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isPrime</span>(<span class="params">n</span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> max = <span class="title class_">Math</span>.<span class="title function_">ceil</span>(<span class="title class_">Math</span>.<span class="title function_">sqrt</span>(n));</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (n === <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> counter = <span class="number">2</span>; counter &lt;= max; counter++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n % counter === <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">App</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/heavy-computations.png" alt="&#39;进行繁重的计算&#39;"></p>
+<p>现在的问题是： 不管哪个状态发生改变，我们都要重新计算素数的个数。并且，因为时钟是每一秒都在发生变化的，所以我们要持续不断得重新生成一连串得素数，即使我们输入的数字并没有发生改变。那为什么我们不“skip” these calculations呢？我们可以re-use之前已经计算好的素数，而不是在每一秒都抓狂地重复计算。</p>
+<p>因此，我们可以利用useMemo进行optimize</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> allPrimes = <span class="title class_">React</span>.<span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> counter = <span class="number">2</span>; counter &lt; selectedNum; counter++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">isPrime</span>(counter)) &#123;</span><br><span class="line">      result.<span class="title function_">push</span>(counter);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;, [selectedNum]);</span><br></pre></td></tr></table></figure>
+
+<p>使用了useMemo以后，我们只有在selectedNum发生变化时才会重复计算这范围内的素数。而这组件由于其他原因而发生的重新渲染，都不会再重复计算，而是使用先前缓存的值。</p>
+<p>除了useMemo,还能怎么减少不必要的重复计算呢？<br>use pure components, memo().This means that it should only re-render whenever its props change.</p>
+<p>Our PurePrimeCalculator will only re-render when it receives new data, or when its internal state changes.</p>
+<p>2.Preserved references(需要缓存地址)</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.js</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Boxes</span> <span class="keyword">from</span> <span class="string">&#x27;./Boxes&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [name, setName] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> [boxWidth, setBoxWidth] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="number">1</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> id = <span class="title class_">React</span>.<span class="title function_">useId</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Try changing some of these values!</span></span><br><span class="line">  <span class="keyword">const</span> boxes = [</span><br><span class="line">    &#123; <span class="attr">flex</span>: boxWidth, <span class="attr">background</span>: <span class="string">&#x27;hsl(345deg 100% 50%)&#x27;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">flex</span>: <span class="number">3</span>, <span class="attr">background</span>: <span class="string">&#x27;hsl(260deg 100% 40%)&#x27;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">flex</span>: <span class="number">1</span>, <span class="attr">background</span>: <span class="string">&#x27;hsl(50deg 100% 60%)&#x27;</span> &#125;,</span><br><span class="line">  ];</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Boxes</span> <span class="attr">boxes</span>=<span class="string">&#123;boxes&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      </span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">section</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">htmlFor</span>=<span class="string">&#123;</span>`$&#123;<span class="attr">id</span>&#125;<span class="attr">-name</span>`&#125;&gt;</span></span></span><br><span class="line"><span class="language-xml">          Name:</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">input</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">id</span>=<span class="string">&#123;</span>`$&#123;<span class="attr">id</span>&#125;<span class="attr">-name</span>`&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">type</span>=<span class="string">&quot;text&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">value</span>=<span class="string">&#123;name&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">onChange</span>=<span class="string">&#123;(event)</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">            setName(event.target.value);</span></span><br><span class="line"><span class="language-xml">          &#125;&#125;</span></span><br><span class="line"><span class="language-xml">        /&gt;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">htmlFor</span>=<span class="string">&#123;</span>`$&#123;<span class="attr">id</span>&#125;<span class="attr">-box-width</span>`&#125;&gt;</span></span></span><br><span class="line"><span class="language-xml">          First box width:</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">input</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">id</span>=<span class="string">&#123;</span>`$&#123;<span class="attr">id</span>&#125;<span class="attr">-box-width</span>`&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">type</span>=<span class="string">&quot;range&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">min</span>=<span class="string">&#123;1&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">max</span>=<span class="string">&#123;5&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">step</span>=<span class="string">&#123;0.01&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">value</span>=<span class="string">&#123;boxWidth&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">onChange</span>=<span class="string">&#123;(event)</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">            setBoxWidth(Number(event.target.value));</span></span><br><span class="line"><span class="language-xml">          &#125;&#125;</span></span><br><span class="line"><span class="language-xml">        /&gt;</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">App</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Boxes.js</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Boxes</span>(<span class="params">&#123; boxes &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">&quot;boxes-wrapper&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      &#123;boxes.map((boxStyles, index) =&gt; (</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">div</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">key</span>=<span class="string">&#123;index&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">className</span>=<span class="string">&quot;box&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">style</span>=<span class="string">&#123;boxStyles&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        /&gt;</span></span></span><br><span class="line"><span class="language-xml">      ))&#125;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">React</span>.<span class="title function_">memo</span>(<span class="title class_">Boxes</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在本例子中，Boxes组件是pure component,它只有在props发生变化才会re-render。<br>现在的问题在于，Boxes组件只有一个props，即boxes， 但是boxes在每次重新渲染时都是相同数据的数组。然而，在每一次re-render时，我们都要生成新的数组，而这些数组的存储的数据都是一样，但是它们的引用地址（reference）却是不一样的。因此会进行很多不必要的渲染。</p>
+<p>为什么每次的boxes看似一模一样，却每次都要重新创建数组呢？<br><strong>the boxes prop has received a freshly-created, never-before-seen array.</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getNumbers</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> firstResult = <span class="title function_">getNumbers</span>();</span><br><span class="line"><span class="keyword">const</span> secondResult = <span class="title function_">getNumbers</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(firstResult === secondResult);  <span class="comment">//false </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p> 很形象地说法是，Two identical twins are not the same person.<br> <img src="/images/different-people.png" alt="&#39;进行繁重的计算&#39;"></p>
+<p>对于strings, numbers, boolean这些数据类型，是根据值本身去比较是否相同的，<br>但是对于array, object的数据类型，是只能根据它们本身的地址引用去比较的。</p>
+<p>解决方法：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> boxes = <span class="title class_">React</span>.<span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> [</span><br><span class="line">    &#123; <span class="attr">flex</span>: boxWidth, <span class="attr">background</span>: <span class="string">&#x27;hsl(345deg 100% 50%)&#x27;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">flex</span>: <span class="number">3</span>, <span class="attr">background</span>: <span class="string">&#x27;hsl(260deg 100% 40%)&#x27;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">flex</span>: <span class="number">1</span>, <span class="attr">background</span>: <span class="string">&#x27;hsl(50deg 100% 60%)&#x27;</span> &#125;,</span><br><span class="line">  ];</span><br><span class="line">&#125;, [boxWidth]);</span><br></pre></td></tr></table></figure>
+<p>这次使用useMemo并非像上一个例子那样是为了减少素数的计算次数。<br>Our only goal is to preserve a reference to a particular array. Ignoring renders that don’t affect the UI.<br> <img src="/images/useMemo-before.png" alt="&#39;使用useMemo前&#39;"></p>
+<p> <img src="/images/useMemo-after.png" alt="&#39;使用useMemo后&#39;"></p>
+<h2 id="useCallback"><a href="#useCallback" class="headerlink" title="useCallback"></a>useCallback</h2><p>useCallback的使用几乎与useMemo一样，<strong>不过useCallback缓存的是一个function</strong>，当依赖项中的一项发现变化，函数体会重新创建。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Similar to arrays and objects, functions are compared by reference, not by value.</span></span><br><span class="line"><span class="keyword">const</span> functionOne = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> functionTwo = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(functionOne === functionTwo); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>也就是说，如果我们在组件中定义了一个函数，那么在组件的每次重新渲染都会导致re-generated该函数<br>（an identical-but-unique function）</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.js</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">MegaBoost</span> <span class="keyword">from</span> <span class="string">&#x27;./MegaBoost&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleMegaBoost</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">setCount</span>(<span class="function">(<span class="params">currentValue</span>) =&gt;</span> currentValue + <span class="number">1234</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      Count: &#123;count&#125;</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">          setCount(count + 1)</span></span><br><span class="line"><span class="language-xml">        &#125;&#125;</span></span><br><span class="line"><span class="language-xml">      &gt;</span></span><br><span class="line"><span class="language-xml">        Click me!</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">MegaBoost</span> <span class="attr">handleClick</span>=<span class="string">&#123;handleMegaBoost&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">App</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// megaBoost.js</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">MegaBoost</span>(<span class="params">&#123; handleClick &#125;</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Render MegaBoost&#x27;</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">button</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      <span class="attr">className</span>=<span class="string">&quot;mega-boost-button&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      <span class="attr">onClick</span>=<span class="string">&#123;handleClick&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    &gt;</span></span></span><br><span class="line"><span class="language-xml">      MEGA BOOST!</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">React</span>.<span class="title function_">memo</span>(<span class="title class_">MegaBoost</span>);</span><br></pre></td></tr></table></figure>
+<p>MegaBoost组件是个pure component, 它并不依赖于count的变化，但是每一次count的改变都是导致它re-render。Why?<br>因为每次count的改变都是使得组件重新渲染，而App component重新渲染会重新创建handleMegaBoost函数，这就使得MegaBoost component的props发生改变，因此MegaBoost 也会重新渲染。</p>
+<p>那怎么解决呢？</p>
+<ol>
+<li>使用useMemo解决<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handleMegaBoost = <span class="title class_">React</span>.<span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">setCount</span>(<span class="function">(<span class="params">currentValue</span>) =&gt;</span> currentValue + <span class="number">1234</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, []);</span><br></pre></td></tr></table></figure></li>
+<li>使用useCallback解决<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handleMegaBoost = <span class="title class_">React</span>.<span class="title function_">useCallback</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">setCount</span>(<span class="function">(<span class="params">currentValue</span>) =&gt;</span> currentValue + <span class="number">1234</span>);</span><br><span class="line">&#125;, []);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>实际上，useCallback和useMemo的功能很像，只是useCallback缓存的是函数，而useMemo缓存的是值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useCallback</span>(<span class="keyword">function</span> <span class="title function_">helloWorld</span>(<span class="params"></span>)&#123;&#125;, []);</span><br><span class="line"><span class="comment">// equivalent to this:</span></span><br><span class="line"><span class="title class_">React</span>.<span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> <span class="keyword">function</span> <span class="title function_">helloWorld</span>(<span class="params"></span>)&#123;&#125;, []);</span><br></pre></td></tr></table></figure>
+
+<h2 id="什么时候使用useMemo和useCallback更合适"><a href="#什么时候使用useMemo和useCallback更合适" class="headerlink" title="什么时候使用useMemo和useCallback更合适?"></a>什么时候使用useMemo和useCallback更合适?</h2><p>一个函数执行完毕之后，就会从函数调用栈中被弹出，里面的内存也会被回收。因此，即使在函数内部创建了多个函数，执行完毕之后，这些创建的函数也都会被释放掉。函数式组件的性能是非常快的。相比class，函数更轻量，也避免了使用高阶组件、renderProps等会造成额外层级的技术。使用合理的情况下，性能几乎不会有什么问题。</p>
+<p>而当我们使用useMemo/useCallback时，由于新增了对于闭包的使用，新增了对于依赖项的比较逻辑，因此，盲目使用它们，甚至可能会让你的组件变得更慢。大多数情况下，这样的交换，并不划算。你的组件可能并不需要使用useMemo/useCallback来优化。</p>
+<p><strong>总的来说，就是需要权衡组件re-render 的次数和React.memo、useMemo与useCallback这些缓存机制的代价，做好平衡，不能盲目的多用这类缓存优化方案</strong></p>
+<p>通常情况下，当函数体或者结果的计算过程非常复杂时，我们才会考虑优先使用useCallback/useMemo。</p>
+<p>例如在一个一定会多次re-render的组件里，input的回调没有任何依赖项，我们就可以使用useCallback来降低多次执行带来的重复创建同样方法的负担。<br>又例如，在日历组件中，需要根据今天的日期，计算出当月的所有天数以及相关的信息。</p>
+<p><strong>不过，当依赖项会频繁变动时，我们也要考虑使用useMemo/useCallback是否划算。</strong></p>
+
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
+                
+                Tagged with <a href="/tags/react/" class="tag">#react</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
+    </div>
+
+    
+        
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/home" class="item">Blog</a>
+                
+                <a href="/archives" class="item">Archives</a>
+                
+                <a href="/resume" class="item">Resume</a>
+                
+                <a href="/about" class="item">About</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Projects</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/hexo-theme-cupertino" class="item">Hexo Theme Cupertino</a>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/a-calendar" class="item">A Calendar</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/coralor" class="item">GitHub</a>
+                
+                <a href="mailto:mr.will.com@outlook.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 Coral<br >Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> </span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+        
+    </body>
+</html>

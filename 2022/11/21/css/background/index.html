@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>background的属性整理 - Coralor</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+  
+<link rel="stylesheet" href="/css/rainbow-banner.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/toc.css">
+
+  
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body
+        data-color-scheme="auto"
+        
+        data-rainbow-banner="true"
+        data-rainbow-banner-shown="auto"
+        data-rainbow-banner-month="6"
+        data-rainbow-banner-colors="#e50000,#ff8d00,#ffee00,#008121,#004cff,#760188"
+        
+        data-config-root="/"
+        
+        data-toc="true"
+        data-toc-max-depth="2"
+        
+    >
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">Coral&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">Home</a>
+            
+            
+            <a class="nav-item" href="/archives">Archives</a>
+            
+            
+            
+            <a class="nav-item" href="/about">About</a>
+            
+            
+            
+            <a class="nav-item" href="/tags">Tags</a>
+            
+            
+            
+            <a class="nav-item" href="/categories">Category</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-codepen nav-item-icon" href="https://codepen.io/mrwillcom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-patreon nav-item-icon" href="https://www.patreon.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-mastodon nav-item-icon" href="https://noc.social/@MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-discord nav-item-icon" href="https://discord.gg/UKuFDjcfY8" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+
+        
+        <div class="date" id="date">
+            <span>November</span>
+            <span>21,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">background的属性整理</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <h2 id="background-image"><a href="#background-image" class="headerlink" title="background-image"></a>background-image</h2><p>语法：background-image: url() | none | inherit;<br>1.url()：指向图像的路径。<br>2.none：默认值。不显示背景图像。<br>3.inherit：规定应该从父元素继承 background-image 属性的设置。<br><strong>如果定义了多组背景图，且背景图之间有重叠，写在前面的将会盖在写在后面的图像之上。</strong></p>
+<h2 id="background-position"><a href="#background-position" class="headerlink" title="background-position"></a>background-position</h2><p>语法：background-position:<position> [<position>]，第二个值可选；第一个值规定水平位置，第二个值规定垂直位置</p>
+<ol>
+<li>关键词top、bottom、left、right、center：规定图像分别从顶部、底部、左边、右边和中间开始填充，如果只规定了第一个position，那么第二个值为center；</li>
+<li>percentage：用百分比指定背景图像填充的位置，可以为负值。如果只规定了第一个值，那么第二个值为50%；</li>
+<li>length：用长度值（可以是任何单位）指定背景图像填充的位置。可以为负值。如果只规定了第一个值，那么第二个值为50%。</li>
+</ol>
+<p>在css3中，可以为background-position提供四个参数值。<br>如果提供四个，每个percentage或length值的前面必须提供关键词（即top、bottom、left、right、center）来指定相对偏移的方向，比如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#bg</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">500px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">margin</span>:<span class="number">0</span> auto;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">50px</span>; </span><br><span class="line">    <span class="attribute">border</span>:<span class="number">10px</span> dashed <span class="built_in">rgba</span>(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">7</span>);</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0ff</span> <span class="built_in">url</span>(<span class="string">&#x27;https://p3.music.126.net/ZjlPU7akZZYlscvnLS9NjA==/18668607929720106.jpg&#x27;</span>) no-repeat;</span><br><span class="line">    <span class="attribute">background-size</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">background-position</span>: right <span class="number">50px</span> bottom <span class="number">50px</span>;  // 相对右边界向左偏移<span class="number">50px</span>，相对底边界向上偏移<span class="number">50px</span>(距离右边界<span class="number">50px</span>, 下边界<span class="number">50px</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是用长度值来规定背景图片的位置，那么这个长度值的度量方式是：图片的边缘线到指定偏移方向的距离<br>如果使用百分比来规定图片背景的位置，那么这个百分比的度量方式为：相对于图片的百分比位置到边界的距离等于相对于这个块元素的百分比距离</p>
+<p>例如： background-position: 50% 50%;<br><strong>就是说相对于图片水平和垂直都是50%的位置（即图片的中心点），这个中心点到左边界和上边界的距离都是这个块的宽和高（不包括边框）的50%。</strong></p>
+<h2 id="background-size"><a href="#background-size" class="headerlink" title="background-size"></a>background-size</h2><p>语法：background-position:length|percentage|cover|contain;，可设置两个值，第二个值可选；第一个值设置宽度，第二个值设置高度；</p>
+<ol>
+<li>length：设置背景图像的高度和宽度。可以是任何单位。如果只设置一个值，则第二个值会被设置为 “auto”；</li>
+<li>percentage：以父元素的百分比来设置背景图像的宽度和高度。如果只设置一个值，则第二个值会被设置为 “auto”；（即图片的宽和高是容器的宽和高的x%）</li>
+<li>cover：<strong>将背景图像等比缩放到完全覆盖容器，背景图像有可能超出容器。</strong> （即铺满容器，背景图可能不完整）</li>
+<li>contain：<strong>将背景图像等比缩放到宽度或高度与容器的宽度或高度相等，背景图像始终被包含在容器内。</strong>（即背景图完整，但容器未必铺满）</li>
+</ol>
+<h2 id="background-repeat"><a href="#background-repeat" class="headerlink" title="background-repeat"></a>background-repeat</h2><p>语法：background-position:<repeat-style> [<repeat-style>];，可设置两个值，第二个值可选；第一个用于横向，第二个用于纵向。默认值：repeat<br>1.repeat-x：背景图像在横向上平铺<br>2.repeat-y：背景图像在纵向上平铺<br>3.repeat：背景图像在横向和纵向平铺<br>4.no-repeat：背景图像不平铺<br>5.round：背景图像自动缩放直到适应且填充满整个容器。（CSS3）<br>6.space：背景图像以相同的间距平铺且填充满整个容器或某个方向。（CSS3）</p>
+<h2 id="background-origin"><a href="#background-origin" class="headerlink" title="background-origin"></a>background-origin</h2><p>语法：background-origin: padding-box|border-box|content-box; 默认值：padding-box</p>
+<p>1.border-box：从border区域（含border）开始显示背景图像。<br>2.padding-box：从padding区域（含padding）开始显示背景图像。<br>3.content-box：从content区域开始显示背景图像。</p>
+<h2 id="background-attachment"><a href="#background-attachment" class="headerlink" title="background-attachment"></a>background-attachment</h2><p>语法：background-attachment : fixed | scroll | local; 默认值：scroll</p>
+<p>1.fixed：背景图像相对于窗体固定。<br>2.scroll：背景图像相对于元素固定，也就是说当元素内容滚动时背景图像不会跟着滚动，因为背景图像总是要跟着元素本身。但会随元素的祖先元素或窗体一起滚动。<br>3.local：背景图像相对于元素内容固定，也就是说当元素随元素滚动时背景图像也会跟着滚动，因为背景图像总是要跟着内容。（CSS3）</p>
+<!-- https://www.cnblogs.com/zzsdream/p/13583346.html -->
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
+                
+                Tagged with <a href="/tags/css/" class="tag">#css</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
+    </div>
+
+    
+        
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/home" class="item">Blog</a>
+                
+                <a href="/archives" class="item">Archives</a>
+                
+                <a href="/resume" class="item">Resume</a>
+                
+                <a href="/about" class="item">About</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Projects</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/hexo-theme-cupertino" class="item">Hexo Theme Cupertino</a>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/a-calendar" class="item">A Calendar</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/coralor" class="item">GitHub</a>
+                
+                <a href="mailto:mr.will.com@outlook.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 Coral<br >Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> </span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+        
+    </body>
+</html>

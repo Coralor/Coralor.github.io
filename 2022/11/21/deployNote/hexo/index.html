@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>hexo多终端写blog - Coralor</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+  
+<link rel="stylesheet" href="/css/rainbow-banner.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/toc.css">
+
+  
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body
+        data-color-scheme="auto"
+        
+        data-rainbow-banner="true"
+        data-rainbow-banner-shown="auto"
+        data-rainbow-banner-month="6"
+        data-rainbow-banner-colors="#e50000,#ff8d00,#ffee00,#008121,#004cff,#760188"
+        
+        data-config-root="/"
+        
+        data-toc="true"
+        data-toc-max-depth="2"
+        
+    >
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">Coral&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">Home</a>
+            
+            
+            <a class="nav-item" href="/archives">Archives</a>
+            
+            
+            
+            <a class="nav-item" href="/about">About</a>
+            
+            
+            
+            <a class="nav-item" href="/tags">Tags</a>
+            
+            
+            
+            <a class="nav-item" href="/categories">Category</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-codepen nav-item-icon" href="https://codepen.io/mrwillcom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-patreon nav-item-icon" href="https://www.patreon.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-mastodon nav-item-icon" href="https://noc.social/@MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-discord nav-item-icon" href="https://discord.gg/UKuFDjcfY8" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+
+        
+        <div class="date" id="date">
+            <span>November</span>
+            <span>21,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">hexo多终端写blog</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>hexo 上传部署到github的其实是hexo编译后的文件（即部署时自动生成的.deploy_git文件），是用来生成网页的，不包含源文件，配置文件，主题文件等。所以一旦换了电脑，从github上git clone下来的代码是并不能让我们实现多终端写blog的。</p>
+<p>因此利用git的分支管理，把源文件进行备份，但是并非最优解。</p>
+<h1 id="在源电脑处："><a href="#在源电脑处：" class="headerlink" title="在源电脑处："></a>在源电脑处：</h1><ol>
+<li>创建一个hexo分支，并设置为默认的分支，便于pull与push时不用指定分支</li>
+<li>在本地任意目录，git clone + 项目地址</li>
+<li>把文件中除.git文件以外的所有文件删除，<strong>如果没有.git文件，在查看出点击显示隐藏文件</strong></li>
+<li>把原电脑中除了.deploy_git文件的所有源文件拷贝过来</li>
+<li>copy过来后，添加一个.gitignore文件，用来忽略一些git的提交文件，<br>文件内容如下：<br>.DS_Store<br>Thumbs.db<br>db.json<br><em>.log<br>node_modules/<br>public/<br>.deploy</em>/</li>
+<li>你之前克隆过theme中的主题文件，那么应该把主题文件中的.git文件夹删掉</li>
+<li>git add .<br>git commit –m “add branch”<br>git push </li>
+</ol>
+<h1 id="在新电脑处"><a href="#在新电脑处" class="headerlink" title="在新电脑处"></a>在新电脑处</h1><ol>
+<li>没有git就install git，然后配置全局的邮箱和用户名</li>
+<li>设置电脑的公钥ssh, ssh-keygen -t rsa -C “youremail”, 按三次回车</li>
+<li>执行命令cat ~/.ssh/id_rsa.pub，得到公钥</li>
+<li>将公钥粘贴到github的ssh配置中（ssh配置在account setting中）</li>
+<li>安装node</li>
+<li>安装hexo, npm install hexo-cli -g</li>
+<li>在任意目录git clone git@……  (使用ssh可以避免网络不好的情况，如果先git clone 了https的，也可以在.git的config文件中修改成ssh方式)</li>
+<li>cd xxx.github.io</li>
+<li>npm install</li>
+<li>npm install hexo-deployer-git –save</li>
+<li>执行hexo命令。（hexo clean / hexo g /  hexo s /  hexo  d）</li>
+</ol>
+<h1 id="hexo-d部署时报错的解决方法"><a href="#hexo-d部署时报错的解决方法" class="headerlink" title="hexo d部署时报错的解决方法"></a>hexo d部署时报错的解决方法</h1><p>hexo部署链接不上github,code为128，最初可以多尝试几次提交，有可能是连接不上github服务器，毕竟国内连接比较不稳定，要是不行可以考虑更新公钥再重试。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fatal: unable to access &#x27;https://github.com/Coralor/Coralor.github.io.git/&#x27;: Failed to connect to github.com port 443: Timed out</span><br><span class="line">FATAL &#123;</span><br><span class="line">  err: Error: Spawn failed</span><br><span class="line">      at ChildProcess.emit (node:events:513:28)</span><br><span class="line">      at ChildProcess.cp.emit (D:\BlogOfCoralPapy\copyBlog\Coralor.github.io\node_modules\cross-spawn\lib\enoent.js:34:29)</span><br><span class="line">      at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12) &#123;</span><br><span class="line">    code: 128</span><br><span class="line">  &#125;</span><br><span class="line">&#125; Something&#x27;s wrong.</span><br></pre></td></tr></table></figure>
+<ol>
+<li>更新windows的公钥，添加到github中</li>
+<li>删除.deploy_git文件，然后重新进行 hexo clean  hexo g  hexo d</li>
+</ol>
+
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
+                
+                Tagged with <a href="/tags/hexo/" class="tag">#hexo</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
+    </div>
+
+    
+        
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/home" class="item">Blog</a>
+                
+                <a href="/archives" class="item">Archives</a>
+                
+                <a href="/resume" class="item">Resume</a>
+                
+                <a href="/about" class="item">About</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Projects</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/hexo-theme-cupertino" class="item">Hexo Theme Cupertino</a>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/a-calendar" class="item">A Calendar</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/coralor" class="item">GitHub</a>
+                
+                <a href="mailto:mr.will.com@outlook.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 Coral<br >Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> </span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+        
+    </body>
+</html>

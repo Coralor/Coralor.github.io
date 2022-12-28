@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>react 的re-render - Coralor</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+  
+<link rel="stylesheet" href="/css/rainbow-banner.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/toc.css">
+
+  
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body
+        data-color-scheme="auto"
+        
+        data-rainbow-banner="true"
+        data-rainbow-banner-shown="auto"
+        data-rainbow-banner-month="6"
+        data-rainbow-banner-colors="#e50000,#ff8d00,#ffee00,#008121,#004cff,#760188"
+        
+        data-config-root="/"
+        
+        data-toc="true"
+        data-toc-max-depth="2"
+        
+    >
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">Coral&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">Home</a>
+            
+            
+            <a class="nav-item" href="/archives">Archives</a>
+            
+            
+            
+            <a class="nav-item" href="/about">About</a>
+            
+            
+            
+            <a class="nav-item" href="/tags">Tags</a>
+            
+            
+            
+            <a class="nav-item" href="/categories">Category</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-codepen nav-item-icon" href="https://codepen.io/mrwillcom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-patreon nav-item-icon" href="https://www.patreon.com/MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-mastodon nav-item-icon" href="https://noc.social/@MrWillCom" target="_blank">&nbsp;</a>
+            
+            
+            
+            <a class="nav-item nav-item-discord nav-item-icon" href="https://discord.gg/UKuFDjcfY8" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+
+        
+        <div class="date" id="date">
+            <span>December</span>
+            <span>13,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">react 的re-render</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>react组件的props和state发生改变时，会触发组件的重新渲染。</p>
+<h1 id="setState的执行原理"><a href="#setState的执行原理" class="headerlink" title="setState的执行原理"></a>setState的执行原理</h1><ol>
+<li>setState接收new State</li>
+<li>接收到的状态不会立即执行，而是存入pendingState(等待队列)</li>
+<li>判断isBatchingUpdates(是否是批量更新)<ol>
+<li>isBatchingUpdate: true, 将new State 存入到dirtyComponents</li>
+<li>isBatchingUpdate: false, 遍历所有的dirtyComponents, 并且调用updateComponent方法更新pendingStates中的state或props。执行完成后，isBatchingUpdates:true</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">import</span> <span class="title class_">React</span>, &#123; useState, useEffect, useRef &#125; <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">excersise</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [params1, setParams1] = useState&lt;number&gt;(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> containerRef = useRef&lt;<span class="title class_">HTMLParagraphElement</span>&gt;(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">timerCallBack</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="comment">// 会渲染三次， params1 = 3</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">asyncCallback</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="title class_">Promise</span>.<span class="title function_">resolve</span>().<span class="title function_">then</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="comment">// 会渲染三次， params1 = 3</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">reactEventCallback</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">    <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">    <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 只会渲染一次， params1 = 1</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">handler</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="title function_">setParams1</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">      <span class="comment">// 会渲染三次， params1 = 3</span></span><br><span class="line">    &#125;;</span><br><span class="line">    containerRef.<span class="property">current</span>?.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, handler);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> containerRef.<span class="property">current</span>?.<span class="title function_">removeEventListener</span>(<span class="string">&quot;click&quot;</span>, handler);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">updateUnuse</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="title function_">setParams4</span>(<span class="function">(<span class="params">pre</span>) =&gt;</span> pre + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 会渲染一次</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">onClick</span>=<span class="string">&#123;timerCallBack&#125;</span>&gt;</span>定时器回调 <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">onClick</span>=<span class="string">&#123;asyncCallback&#125;</span>&gt;</span>异步函数回调<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">onClick</span>=<span class="string">&#123;reactEventCallback&#125;</span>&gt;</span>React合成事件<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">ref</span>=<span class="string">&#123;containerRef&#125;</span>&gt;</span>原生事件<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">onClick</span>=<span class="string">&#123;updateUnuse&#125;</span>&gt;</span>更新未在页面使用的state<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>参数1变化：&#123;params1&#125; <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>1. 在定时器回调，异步函数回调，原生事件中状态的改变都是同步的，并不会被合并。因此它们在变化的过程中都re-render了三次。</strong><br><strong>2. 而在react的合成事件，多次的setState都会被合并成一次更新，所以只会re-render一次</strong></p>
+<p>因此setState无所谓同步还是异步，只是看是否命中batchUpdate机制，判断isBatchingUpdates。</p>
+<h2 id="那么哪些可以命中batchUpdate机制？"><a href="#那么哪些可以命中batchUpdate机制？" class="headerlink" title="那么哪些可以命中batchUpdate机制？"></a>那么哪些可以命中batchUpdate机制？</h2><ul>
+<li>生命周期（和它调用的函数）</li>
+<li>React中注册的事件（和它调用的函数）</li>
+<li>React可管理的入口</li>
+</ul>
+<h2 id="那么哪些不能命中batchUpdate机制？"><a href="#那么哪些不能命中batchUpdate机制？" class="headerlink" title="那么哪些不能命中batchUpdate机制？"></a>那么哪些不能命中batchUpdate机制？</h2><ul>
+<li>setTimeout, setInterval等（和他调用的函数）</li>
+<li>自定义的dom事件（和它调用的函数）</li>
+<li>React管理不了的入口（异步回调等）</li>
+</ul>
+<p>总而言之，</p>
+<ul>
+<li>setState只有在React合成事件和钩子函数中是”异步”的，在定时器，异步回调，原生事件中都是同步的，不触发批量更新。</li>
+<li>setState的”异步”并非是说内部是由异步代码实现，本身执行过程和代码都是同步的，只是合成事件和钩子函数的调用顺序实在更新之前，导致在合成事件和更新函数中没法立马拿到更新后的值，形成了所谓的”异步”。</li>
+<li>setStatede的批量更新优化是建立在”异步”之上。<strong>在“异步”中，如果对同一个值进行多次setState,setState的批量更新策略会对其进行覆盖，取最后一次执行。如果是同时setState多个不同的值那么在更新时会对其进行合并批量更新</strong>。</li>
+</ul>
+
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
+                
+                Tagged with <a href="/tags/react/" class="tag">#react</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
+    </div>
+
+    
+        
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/home" class="item">Blog</a>
+                
+                <a href="/archives" class="item">Archives</a>
+                
+                <a href="/resume" class="item">Resume</a>
+                
+                <a href="/about" class="item">About</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Projects</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/hexo-theme-cupertino" class="item">Hexo Theme Cupertino</a>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/MrWillCom/a-calendar" class="item">A Calendar</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/coralor" class="item">GitHub</a>
+                
+                <a href="mailto:mr.will.com@outlook.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 Coral<br >Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> </span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+        
+    </body>
+</html>

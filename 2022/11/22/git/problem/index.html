@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
   <meta name="color-scheme" content="light dark">
   
-  <title>Archives: 2022/8 - Coralor</title>
+  <title>常见各种git报错汇集和解决 - Coralor</title>
   
     <link rel="shortcut icon" href="/favicon.ico">
   
@@ -60,10 +60,6 @@
 <link rel="stylesheet" href="/css/post.css">
 
   
-  
-  
-<link rel="stylesheet" href="/css/archive.css">
-
   
 
   
@@ -128,42 +124,59 @@
         </div>
     </div>
 </nav>
-        <div class="container">
+        <article class="post">
     <div class="meta">
-        <div class="type">
-            
-            
-        </div>
+        
 
-        <h2 class="title">Archives</h2>
+        
+        <div class="date" id="date">
+            <span>November</span>
+            <span>22,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">常见各种git报错汇集和解决</h2>
     </div>
 
     <div class="divider"></div>
 
-    <div class="post-list archives">
-        
-        <article class="post-list-item">
-            <a href="/2022/08/21/js/js-macroTask-and-microTask-md/">
+    <div class="content">
+        <ol>
+<li>提交代码时遇到的报错<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">warning</span>: | <span class="variable constant_">TLS</span> certificate verification has been disabled! |</span><br><span class="line"><span class="attr">warning</span>: ---------------------------------------------------</span><br><span class="line"><span class="attr">warning</span>: <span class="variable constant_">HTTPS</span> connections may not be secure. <span class="title class_">See</span> <span class="attr">https</span>:<span class="comment">//aka.ms/gcmcore-tlsverify for more information.</span></span><br><span class="line"><span class="attr">warning</span>: ----------------- <span class="variable constant_">SECURITY</span> <span class="variable constant_">WARNING</span> ----------------</span><br><span class="line"><span class="attr">warning</span>: | <span class="variable constant_">TLS</span> certificate verification has been disabled! |</span><br><span class="line"><span class="attr">warning</span>: ---------------------------------------------------</span><br><span class="line"><span class="attr">warning</span>: <span class="variable constant_">HTTPS</span> connections may not be secure. <span class="title class_">See</span> <span class="attr">https</span>:<span class="comment">//aka.ms/gcmcore-tlsverify for more information.</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>解决方法:  开启ssl认证<br>git config –global http.sslVerify true</p>
+<ol start="2">
+<li>把本地项目推送到新的远程仓库遇到的问题</li>
+</ol>
+<p>推送过程：<br>git remote -v 查看本地关联的远程仓库<br>git remote rm origin  (移除当前的origin)<br>git remote add origin git仓库地址<br>git push origin master –force 或 git pull origin master –allow-unrelated-histories<br><strong>（允许不相关历史提交，并强制合并,会导致git history有新仓库的init commit记录, 要是强推就不会有）</strong> </p>
+<p>遇到的报错：<br>(1) git remote add origin + 地址<br>fatal: remote origin already exists.（报错远程起源已经存在。）</p>
+<p>解决方法:  git remote rm origin</p>
+<p>(2) git push -u origin master<br>fatal: Updates were rejected because the remote contains work that you do</p>
+<p>解决方法: git pull origin master<br>但是又会可能出错fatal:refusing to merge unrelated histories<br>解决方法: git pull origin master –allow-unrelated-histories.</p>
+<p>(3) Your local changes to the following files would be overwritten by merge(文件有冲突，没有更新，直接重来一遍)</p>
+
+    </div>
+
+    <div class="about">
+        <h1>About this Post</h1>
+        <div class="details">
+            
+            <p class="tags">
                 
-                <div class="content">
-                    
-                    <div class="title">
-                        js宏任务和微任务
-                    </div>
-                    
-                    <div class="time">
-                        <span>August</span>
-                        <span>&nbsp;21,&nbsp;</span>
-                        <span>2022</span>
-                    </div>
-                </div>
-            </a>
-        </article>
-        
+                Tagged with <a href="/tags/git/" class="tag">#git</a>
+                .
+            </p>
+            
+            <p>This post is written by Coral, licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+        </div>
     </div>
 
     
-</div>
+        
+        
+    
+</article>
         <footer>
     <div class="inner">
         <div class="links">

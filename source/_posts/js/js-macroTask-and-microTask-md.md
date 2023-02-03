@@ -6,7 +6,7 @@ tags:
 
 JS是单线程的语言，然而浏览器却又可以很好地处理异步请求，这是为什么呢？
 
-## 任务
+## 同步任务和异步任务
 
 JS 执行过程中会产生两种任务：同步任务和异步任务。
 
@@ -26,17 +26,24 @@ JavaScript引擎在 等待任务，执行任务 和 进入休眠状态等待更�
 + **那怎么知道主线程执行栈为空啊？**
 js引擎存在monitoring process进程，会持续不断的检查主线程执行栈是否为空，一旦为空，就会去Event Queue那里检查是否有等待被调用的函数。
 
-## 任务队列（Event Queue）
+## 宏任务和微任务
 
-任务队列中的任务也分为两种：宏任务（Macro-take）和微任务（Micro-take）
+JS中的异步任务也分为两种：**宏任务（Macro-take）和微任务（Micro-take）**
+**在es5后，javascript引入了Promise，这样，不需要浏览器，js引擎自身也可以发起异步任务。**
 
-+ 宏任务主要包括：scrip(JS 整体代码)、setTimeout、setInterval、setImmediate、I/O、UI 交互
-+ 微任务主要包括：Promise(重点关注)、process.nextTick(Node.js)、MutaionObserver
++ 宏任务是由宿主(浏览器，node)发起，微任务由js引擎发起的。
++ 宏任务主要包括：scrip(JS 整体代码)、setTimeout、setInterval、setImmediate、I/O、UI 交互，网络请求（AJAX/Fetch)
++ 微任务主要包括：Promise(重点关注, Promise本身是同步的，但是then，catch是异步)、process.nextTick(Node.js)、MutaionObserver、Async/Await、Object.observe
 
-**任务队列的执行过程是：先执行一个宏任务，执行过程中如果产出新的宏/微任务，就将他们推入相应的任务队列，之后执行一队列微任务，之后再执行宏任务，如此循环。以上不断重复的过程就叫做 Event Loop(事件循环)。
-每一次的循环操作被称为tick。**
+**任务队列的执行过程是：先执行一个宏任务，执行过程中如果产出新的宏/微任务，就将他们推入相应的任务队列，之后执行一队列微任务，之后再执行宏任务，如此循环。以上不断重复的过程就叫做 Event Loop(事件循环)。**
+每一次的循环操作被称为tick。
 
 !['任务队列的执行过程'](/images/taskProcess.png)
+
+执行的代码可能有三种：
+1. 同步代码（JS执行栈、回调栈)
+2. 微任务的异步代码（JS引擎）
+3. 宏任务的异步代码(宿主环境)
 
 ## 到底先执行宏任务还是微任务？
 
@@ -251,8 +258,8 @@ timeout 出队，宏任务清空
 
 ### setTimerout 并不准确
 
-**setTimeout() 的第二个参数是为了告诉 JavaScript 再过多长时间把当前任务添加到队列中。
-如果队列是空的，那么添加的代码会立即执行；如果队列不是空的，那么它就要等前面的代码执行完了以后再执行。**
+**setTimeout() 的第二个参数是为了告诉 JavaScript 再过多长时间把当前任务添加到队列中。**
+**如果队列是空的，那么添加的代码会立即执行；如果队列不是空的，那么它就要等前面的代码执行完了以后再执行。**
 
 ```javascript
 const s = new Date().getSeconds();
@@ -314,3 +321,6 @@ process.nextTick(function() {
 ```
 
 执行顺序： 3 4 7 8 5
+
+
+<!--event loop exercise site https://www.jsv9000.app/ -->

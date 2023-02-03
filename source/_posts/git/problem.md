@@ -41,3 +41,33 @@ fatal: Updates were rejected because the remote contains work that you do
 解决方法: git pull origin master --allow-unrelated-histories.
 
 (3) Your local changes to the following files would be overwritten by merge(文件有冲突，没有更新，直接重来一遍)
+
+(4) ssh连接方式下，推送代码到github报错：
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 20.205.243.166 port 22
+fatal: Could not read from remote repository.
+Please make sure you have the correct access rights
+and the repository exists.
+
+解决方法：
+1.ssh -T -p 443 git@ssh.github.com 修改端口
+
+2.在C:\Users\admin\.ssh目录下添加config文件
+文件内容为： 
+Host github.com
+User git
+Hostname ssh.github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa
+Port 443
+
+3.ssh -vT git@github.com 测试是否可连接github
+出现以下即连接成功：
+debug1: pledge: network
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+Hi Coralor! You've successfully authenticated, but GitHub does not provide shell access.
+debug1: channel 0: free: client-session, nchannels 1
+Transferred: sent 3016, received 2776 bytes, in 0.6 seconds
+Bytes per second: sent 5332.4, received 4908.1or.github.io> git pull origin hexo  
+debug1: Exit status 1

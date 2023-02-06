@@ -49,7 +49,10 @@ fatal: Could not read from remote repository.
 Please make sure you have the correct access rights
 and the repository exists.
 
-解决方法：
+解决方法一：
+直接把git的config文件中的url修改成https进行连接
+
+解决方法二（经常不成功）：
 1.ssh -T -p 443 git@ssh.github.com 修改端口
 
 2.在C:\Users\admin\.ssh目录下添加config文件
@@ -71,3 +74,4 @@ debug1: channel 0: free: client-session, nchannels 1
 Transferred: sent 3016, received 2776 bytes, in 0.6 seconds
 Bytes per second: sent 5332.4, received 4908.1or.github.io> git pull origin hexo  
 debug1: Exit status 1
+
